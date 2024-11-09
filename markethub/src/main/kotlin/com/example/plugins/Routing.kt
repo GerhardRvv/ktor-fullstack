@@ -3,15 +3,13 @@ package com.example.plugins
 import com.example.model.Priority
 import com.example.model.Task
 import com.example.model.TaskRepository
-import com.example.model.tasksAsTable
-import com.sun.tools.javac.util.Log
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.Application
-import io.ktor.server.application.log
 import io.ktor.server.http.content.staticResources
-import io.ktor.server.request.receiveParameters
-import io.ktor.server.response.respondText
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -19,106 +17,72 @@ import io.ktor.server.routing.routing
 
 fun Application.configureRouting() {
     routing {
-
-        staticResources("/task-ui", "task-ui")
+        staticResources("static", "static")
 
         route("/tasks") {
-
             get {
-                val tasks = TaskRepository.allTasks()
-                call.respondText(
-                    contentType = ContentType.parse("text/html"),
-                    text = tasks.tasksAsTable()
-                )
+                val allTasks = TaskRepository.allTasks()
+                call.respond(allTasks)
             }
 
             get("/byName/{taskName}") {
                 val name = call.parameters["taskName"]
                 if (name == null) {
-                    call.respondText("Task name not specified", status = HttpStatusCode.BadRequest)
+                    call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
 
                 val task = TaskRepository.taskByName(name)
                 if (task == null) {
-                    call.respondText("Task not found", status =HttpStatusCode.NotFound)
+                    call.respond(HttpStatusCode.NotFound)
                     return@get
                 }
-
-                call.respondText(
-                    contentType = ContentType.parse("text/html"),
-                    text = listOf(task).tasksAsTable()
-                )
+                call.respond(task)
             }
 
             get("/byPriority/{priority}") {
                 val priorityAsText = call.parameters["priority"]
                 if (priorityAsText == null) {
-                    call.respondText("Priority not specified", status = HttpStatusCode.BadRequest)
+                    call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
-
                 try {
                     val priority = Priority.valueOf(priorityAsText)
                     val tasks = TaskRepository.tasksByPriority(priority)
 
                     if (tasks.isEmpty()) {
-                        call.respondText(
-                            "No tasks found for this priority",
-                            status = HttpStatusCode.NotFound
-                        )
+                        call.respond(HttpStatusCode.NotFound)
                         return@get
                     }
-
-                    call.respondText(
-                        contentType = ContentType.parse("text/html"),
-                        text = tasks.tasksAsTable()
-                    )
+                    call.respond(tasks)
                 } catch (ex: IllegalArgumentException) {
-                    call.respondText("Invalid priority value", status = HttpStatusCode.BadRequest)
+                    call.respond(HttpStatusCode.BadRequest)
                 }
             }
 
             post {
-                val formContent = call.receiveParameters()
-                log.debug("Received form content: $formContent")
+                try {
+                    val task = call.receive<Task>()
+                    TaskRepository.addTask(task)
+                    call.respond(HttpStatusCode.NoContent)
+                } catch (ex: IllegalStateException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                } catch (ex: JsonConvertException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
 
-                val params = Triple(
-                    formContent["name"] ?: "",
-                    formContent["description"] ?: "",
-                    formContent["priority"] ?: ""
-                )
-
-                if (params.toList().any { it.isEmpty() }) {
-                    log.warn("Missing parameters in form submission")
-                    call.respondText("Missing parameters", status = HttpStatusCode.BadRequest)
-                    return@post
+            delete("/{taskName}") {
+                val name = call.parameters["taskName"]
+                if (name == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@delete
                 }
 
-                try {
-                    val priority = Priority.valueOf(params.third)
-
-                    log.info("Adding task: $params")
-                    log.info("Priority: $priority")
-
-                    TaskRepository.addTask(
-                        Task(
-                            name = params.first,
-                            description = params.second,
-                            priority = priority
-                        )
-                    )
-
-                    call.respondText("Task added", status = HttpStatusCode.NoContent)
-                } catch (ex: IllegalArgumentException) {
-                    log.error("Invalid priority value: ${params.third}", ex)
-                    call.respondText("Invalid priority value", status = HttpStatusCode.BadRequest)
-                } catch (ex: IllegalStateException) {
-                    log.warn("Task with name ${params.first} already exists", ex)
-                    call.respondText(
-                        "Task with this name already exists",
-                        status = HttpStatusCode.BadRequest
-                    )
+                if (TaskRepository.removeTask(name)) {
+                    call.respond(HttpStatusCode.NoContent)
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
                 }
             }
         }

@@ -2,12 +2,10 @@ package com.example.model
 
 object TaskRepository {
     private val tasks = mutableListOf(
-        Task("Buy milk", "Go to the store and buy some milk", Priority.Medium),
-        Task("Clean the house", "Clean the whole house", Priority.High),
-        Task("Call mom", "Call mom and say hello", Priority.Low),
-        Task("Clean the Other house", "Clean the other whole house", Priority.High),
-        Task("Call mom", "Call mom and say hello", Priority.Low),
-//        Task("Do homework", "Do the math homework", Priority.Vital)
+        Task("cleaning", "Clean the house", Priority.Low),
+        Task("gardening", "Mow the lawn", Priority.Medium),
+        Task("shopping", "Buy the groceries", Priority.High),
+        Task("painting", "Paint the fence", Priority.Medium)
     )
 
     fun allTasks(): List<Task> = tasks
@@ -25,5 +23,9 @@ object TaskRepository {
             throw IllegalArgumentException("Task with name ${task.name} already exists")
         }
         tasks.add(task)
+    }
+
+    fun removeTask(name: String): Boolean {
+        return tasks.removeIf { it.name ==  name}
     }
 }
