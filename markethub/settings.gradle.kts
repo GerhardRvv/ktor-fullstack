@@ -1,1 +1,1 @@
-rootProject.name = "com.ludusoftstudios.markethub"
+rootProject.name = "com.example.ktor"
