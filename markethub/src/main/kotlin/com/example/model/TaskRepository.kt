@@ -16,12 +16,12 @@ object TaskRepository {
         it.priority == priority
     }
 
-    fun tasksByName(name: String) = tasks.find {
+    fun taskByName(name: String) = tasks.find {
         it.name.equals(name, ignoreCase = true)
     }
 
     fun addTask(task: Task) {
-        if (tasksByName(task.name) == null) {
+        if (taskByName(task.name) != null) {
             throw IllegalArgumentException("Task with name ${task.name} already exists")
         }
         tasks.add(task)
