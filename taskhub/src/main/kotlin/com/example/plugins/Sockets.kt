@@ -1,35 +1,51 @@
 package com.example.plugins
 
 import com.example.model.Task
+import com.example.model.FakeTaskRepository
 import com.example.model.TaskRepository
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.server.websocket.WebSocketServerSession
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.pingPeriod
 import io.ktor.server.websocket.receiveDeserialized
 import io.ktor.server.websocket.sendSerialized
+import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.close
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
 import java.util.Collections
+import kotlin.time.Duration.Companion.seconds
 
-fun Application.configureSockets() {
+fun Application.configureSockets(repository: TaskRepository) {
+    install(WebSockets) {
+        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        pingPeriod = 15.seconds
+        timeout = 15.seconds
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+    }
+
     routing {
         val sessions = Collections.synchronizedList<WebSocketServerSession>(ArrayList())
 
         webSocket("/tasks") {
-            sendAllTasks()
+            sendAllTasks(repository)
             close(CloseReason(CloseReason.Codes.NORMAL, "All done"))
         }
 
         webSocket("/tasks2") {
             sessions.add(this)
-            sendAllTasks()
+            sendAllTasks(repository)
 
             while(true) {
                 val newTask = receiveDeserialized<Task>()
-                TaskRepository.addTask(newTask)
+                repository.addTask(newTask)
                 for(session in sessions) {
                     session.sendSerialized(newTask)
                 }
@@ -38,8 +54,8 @@ fun Application.configureSockets() {
     }
 }
 
-private suspend fun DefaultWebSocketServerSession.sendAllTasks() {
-    for(task in TaskRepository.allTasks()) {
+private suspend fun DefaultWebSocketServerSession.sendAllTasks(repository: TaskRepository) {
+    for(task in repository.allTasks()) {
         sendSerialized(task)
         delay(1000)
     }

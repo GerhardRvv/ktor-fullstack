@@ -39,4 +39,10 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.xml)
     implementation(libs.ktor.server.thymeleaf)
 
+    implementation(libs.postgresql)
+    implementation(libs.h2database)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+
 }
