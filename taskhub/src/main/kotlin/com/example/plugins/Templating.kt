@@ -14,7 +14,6 @@ import io.ktor.server.routing.routing
 import io.ktor.server.thymeleaf.ThymeleafContent
 
 fun Application.configureTemplating() {
-
     routing {
         route("/tasksWeb") {
             get {
