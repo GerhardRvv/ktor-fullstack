@@ -20,6 +20,7 @@ ktor-server-test-host-jvm = { module = "io.ktor:ktor-server-test-host-jvm", vers
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 json-path = { module = "com.jayway.jsonpath:json-path", version = "2.9.0" }
 ktor-server-thymeleaf = { module = "io.ktor:ktor-server-thymeleaf", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
