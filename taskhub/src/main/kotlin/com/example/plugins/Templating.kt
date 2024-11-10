@@ -2,22 +2,34 @@ package com.example.plugins
 
 import com.example.model.Priority
 import com.example.model.Task
+import com.example.model.FakeTaskRepository
 import com.example.model.TaskRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import io.ktor.server.thymeleaf.Thymeleaf
 import io.ktor.server.thymeleaf.ThymeleafContent
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 
-fun Application.configureTemplating() {
+fun Application.configureTemplating(repository: TaskRepository) {
+    install(Thymeleaf) {
+        setTemplateResolver(ClassLoaderTemplateResolver().apply {
+            prefix = "templates/thymeleaf/"
+            suffix = ".html"
+            characterEncoding = "utf-8"
+        })
+    }
+
     routing {
         route("/tasksWeb") {
             get {
-                val tasks = TaskRepository.allTasks()
+                val tasks = repository.allTasks()
                 call.respond(
                     ThymeleafContent("all-tasks", mapOf("tasks" to tasks))
                 )
@@ -28,7 +40,7 @@ fun Application.configureTemplating() {
                     call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
-                val task = TaskRepository.taskByName(name)
+                val task = repository.taskByName(name)
                 if (task == null) {
                     call.respond(HttpStatusCode.NotFound)
                     return@get
@@ -45,7 +57,7 @@ fun Application.configureTemplating() {
                 }
                 try {
                     val priority = Priority.valueOf(priorityAsText)
-                    val tasks = TaskRepository.tasksByPriority(priority)
+                    val tasks = repository.tasksByPriority(priority)
 
 
                     if (tasks.isEmpty()) {
@@ -75,14 +87,14 @@ fun Application.configureTemplating() {
                 }
                 try {
                     val priority = Priority.valueOf(params.third)
-                    TaskRepository.addTask(
+                    repository.addTask(
                         Task(
                             params.first,
                             params.second,
                             priority
                         )
                     )
-                    val tasks = TaskRepository.allTasks()
+                    val tasks = repository.allTasks()
                     call.respond(
                         ThymeleafContent("all-tasks", mapOf("tasks" to tasks))
                     )
@@ -95,5 +107,3 @@ fun Application.configureTemplating() {
         }
     }
 }
-
-data class ThymeleafUser(val id: Int, val name: String)

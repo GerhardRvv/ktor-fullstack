@@ -6,7 +6,6 @@ import com.example.model.TaskRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.Application
-import io.ktor.server.http.content.staticResources
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.delete
@@ -15,14 +14,12 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 
-fun Application.configureRouting(repository: TaskRepository) {
+fun Application.configureSerialization(repository: TaskRepository) {
     routing {
-        staticResources("static", "static")
-
         route("/tasks") {
             get {
-                val allTasks = repository.allTasks()
-                call.respond(allTasks)
+                val tasks = repository.allTasks()
+                call.respond(tasks)
             }
 
             get("/byName/{taskName}") {
@@ -31,7 +28,6 @@ fun Application.configureRouting(repository: TaskRepository) {
                     call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
-
                 val task = repository.taskByName(name)
                 if (task == null) {
                     call.respond(HttpStatusCode.NotFound)
@@ -49,6 +45,7 @@ fun Application.configureRouting(repository: TaskRepository) {
                 try {
                     val priority = Priority.valueOf(priorityAsText)
                     val tasks = repository.tasksByPriority(priority)
+
 
                     if (tasks.isEmpty()) {
                         call.respond(HttpStatusCode.NotFound)
@@ -78,7 +75,6 @@ fun Application.configureRouting(repository: TaskRepository) {
                     call.respond(HttpStatusCode.BadRequest)
                     return@delete
                 }
-
                 if (repository.removeTask(name)) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {
