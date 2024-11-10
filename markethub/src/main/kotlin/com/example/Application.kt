@@ -1,8 +1,10 @@
 package com.example
 
-import com.example.plugins.*
+import com.example.plugins.configureRouting
+import com.example.plugins.configureTemplating
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.thymeleaf.Thymeleaf
 import kotlinx.serialization.json.Json
@@ -16,11 +18,13 @@ fun main(args: Array<String>) {
 fun Application.module() {
     install(Thymeleaf) {
         setTemplateResolver(ClassLoaderTemplateResolver().apply {
-            prefix = "templates/"
+            prefix = "templates/thymeleaf/"
             suffix = ".html"
             characterEncoding = "utf-8"
         })
     }
+
+    configureTemplating()
 
     install(ContentNegotiation) {
         json(Json {
