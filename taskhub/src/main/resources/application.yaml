@@ -4,9 +4,11 @@ ktor:
             - com.example.ApplicationKt.module
     deployment:
         port: 8080
+        host: 0.0.0.0
 
     database:
-        url: "jdbc:postgresql://localhost:5432/tasksdatabase"
-        driver: "org.postgresql.Driver"
-        user: "tasksUser"
-        password: "taskspassword"
+#      url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/tasksdatabase"
+#      user: "${DB_USER:defaultUser}"
+#      password: "${DB_PASSWORD:defaultPassword}"
+      driver: "org.postgresql.Driver"
+

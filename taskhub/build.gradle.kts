@@ -1,3 +1,4 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -8,11 +9,33 @@ plugins {
 group = "com.example"
 version = "0.0.1"
 
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    val localProperties = Properties()
+    localProperties.load(localPropertiesFile.inputStream())
+
+    extra["dbUrl"] = localProperties["DB_URL"]
+    extra["dbUser"] = localProperties["DB_USER"]
+    extra["dbPassword"] = localProperties["DB_PASSWORD"]
+}
+
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("com.example.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+    applicationDefaultJvmArgs = listOf(
+        "-Dio.ktor.development=$isDevelopment",
+        "-Ddb.url=${extra["dbUrl"]}",
+        "-Ddb.user=${extra["dbUser"]}",
+        "-Ddb.password=${extra["dbPassword"]}"
+    )
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("tasks-app.jar")
+    }
 }
 
 repositories {
