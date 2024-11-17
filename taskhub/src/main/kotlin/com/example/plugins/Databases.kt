@@ -4,10 +4,10 @@ import io.ktor.server.application.Application
 import org.jetbrains.exposed.sql.Database
 
 fun Application.configureDatabases() {
-    val dbUrl = environment.config.property("ktor.database.url").getString()
     val dbDriver = environment.config.property("ktor.database.driver").getString()
-    val dbUser = environment.config.property("ktor.database.user").getString()
-    val dbPassword = environment.config.property("ktor.database.password").getString()
+    val dbUrl = System.getProperty("db.url")
+    val dbUser = System.getProperty("db.user")
+    val dbPassword = System.getProperty("db.password")
 
     Database.connect(
         url = dbUrl,
