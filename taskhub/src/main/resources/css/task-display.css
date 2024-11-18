@@ -1,0 +1,6 @@
+/* task-display.css */
+#currentTaskDisplay {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 20px;
+}

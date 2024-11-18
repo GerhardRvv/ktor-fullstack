@@ -1,0 +1,16 @@
+/* utils.css */
+.hidden {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.light-text {
+    color: #777;
+}

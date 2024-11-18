@@ -1,0 +1,47 @@
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+h1 {
+    color: #333333;
+}
+
+button {
+    background-color: #f0f0f0;
+    color: #000000;
+    border: 1px solid #cccccc;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+}
+
+table {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #cccccc;
+}
+
+:root {
+    --form-bg-color: #fff;
+    --form-border-color: #ddd;
+    --text-color: #000;
+    --input-bg-color: #fff;
+    --input-text-color: #000;
+    --input-border-color: #ddd;
+    --submit-bg-color: #5cb85c;
+    --submit-text-color: #fff;
+    --submit-bg-hover-color: #4cae4c;
+    --card-bg-color: #fefefe;
+    --card-title-color: #333;
+    --card-subtext-color: #777;
+    --table-bg-color: #fff;
+    --table-header-bg-color: #f4f4f4;
+    --table-border-color: #ddd;
+    --header-text-color: #000;
+    --link-color: #007bff;
+}

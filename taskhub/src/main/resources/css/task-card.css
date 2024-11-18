@@ -1,0 +1,28 @@
+#tasksTableBody tr {
+    background: var(--card-bg-color, #fefefe); /* Default to light background */
+    margin-bottom: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#tasksTableBody tr:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adjusts shadow to be universal */
+}
+
+#tasksTableBody td {
+    padding: 15px;
+    color: var(--text-color, #333); /* Text color adapts to theme */
+}
+
+#tasksTableBody td:first-child {
+    font-weight: bold;
+    color: var(--card-title-color, #333); /* Title color */
+}
+
+#tasksTableBody td:nth-child(2) {
+    text-align: center;
+    font-size: 14px;
+    color: var(--card-subtext-color, #777); /* Subtext color */
+}

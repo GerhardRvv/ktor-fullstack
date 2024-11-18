@@ -18,6 +18,9 @@ import io.ktor.server.routing.routing
 fun Application.configureRouting(repository: TaskRepository) {
     routing {
         staticResources("static", "static")
+        staticResources("/css", "css")
+        staticResources("/icons", "icons")
+        staticResources("/js", "js")
 
         route("/tasks") {
             get {
