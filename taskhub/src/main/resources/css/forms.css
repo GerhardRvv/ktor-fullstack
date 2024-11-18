@@ -1,0 +1,37 @@
+form {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: var(--form-bg-color, #fff); /* Default to light background */
+    border: 1px solid var(--form-border-color, #ddd);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form span, form label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: var(--text-color, #000); /* Adapt text color based on theme */
+}
+
+form input[type="text"], form select {
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 14px;
+    background: var(--input-bg-color, #fff); /* Input background */
+    color: var(--input-text-color, #000); /* Input text color */
+    border: 1px solid var(--input-border-color, #ddd);
+}
+
+form input[type="submit"] {
+    background-color: var(--submit-bg-color, #5cb85c);
+    color: var(--submit-text-color, white);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+form input[type="submit"]:hover {
+    background-color: var(--submit-bg-hover-color, #4cae4c);
+}

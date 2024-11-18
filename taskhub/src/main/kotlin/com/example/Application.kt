@@ -4,8 +4,8 @@ import com.example.model.PostgresTaskRepository
 import com.example.plugins.configureDatabases
 import com.example.plugins.configureRouting
 import com.example.plugins.configureSerialization
-import com.example.plugins.configureSockets
-import com.example.plugins.configureTemplating
+//import com.example.plugins.configureSockets
+//import com.example.plugins.configureTemplating
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -22,8 +22,8 @@ fun Application.module() {
     configureDatabases()
 
     val repository = PostgresTaskRepository()
-    configureSockets(repository)
-    configureTemplating(repository)
+//    configureSockets(repository)
+//    configureTemplating(repository)
 
     install(ContentNegotiation) {
         json(Json {
@@ -32,6 +32,6 @@ fun Application.module() {
             ignoreUnknownKeys = true
         })
     }
-    configureSerialization(repository)
+//    configureSerialization(repository)
     configureRouting(repository)
 }
