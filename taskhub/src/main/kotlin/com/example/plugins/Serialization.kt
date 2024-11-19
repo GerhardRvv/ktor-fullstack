@@ -14,7 +14,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 
-fun Application.configureSerialization(repository: TaskRepository) {
+fun Application.configureSerialization(repository: TaskRepository) { //Used for websockets
     routing {
         route("/tasks") {
             get {
@@ -69,16 +69,21 @@ fun Application.configureSerialization(repository: TaskRepository) {
                 }
             }
 
-            delete("/{taskName}") {
-                val name = call.parameters["taskName"]
-                if (name == null) {
+            delete("/{taskId}") {
+                val id = call.parameters["taskId"]
+                if (id == null) {
                     call.respond(HttpStatusCode.BadRequest)
                     return@delete
                 }
-                if (repository.removeTask(name)) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    call.respond(HttpStatusCode.NotFound)
+                try {
+                    val taskId = id.toInt()
+                    if (repository.removeTask(taskId)) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Task with ID $taskId not found")
+                    }
+                } catch (ex: NumberFormatException) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid Task ID")
                 }
             }
         }

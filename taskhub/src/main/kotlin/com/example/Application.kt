@@ -3,7 +3,7 @@ package com.example
 import com.example.model.PostgresTaskRepository
 import com.example.plugins.configureDatabases
 import com.example.plugins.configureRouting
-import com.example.plugins.configureSerialization
+//import com.example.plugins.configureSerialization
 //import com.example.plugins.configureSockets
 //import com.example.plugins.configureTemplating
 import io.ktor.serialization.kotlinx.json.json

@@ -45,8 +45,8 @@ export function displayTask(taskName) {
     });
 }
 
-export function deleteTask(taskName) {
-    sendDELETE(`/tasks/${taskName}`).then(() => {
+export function deleteTask(taskId) {
+    sendDELETE(`/tasks/${taskId}`).then(() => {
         clearTaskDisplay();
         displayAllTasks();
     });
@@ -79,10 +79,11 @@ function displayTasks(tasks) {
     tasks.forEach((task) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${task.id}</td>
             <td>${task.name}</td>
             <td>${task.priority}</td>
             <td><button class="view-btn" data-name="${task.name}">View</button></td>
-            <td><button class="delete-btn" data-name="${task.name}">Delete</button></td>
+            <td><button class="delete-btn" data-id="${task.id}">Delete</button></td>
         `;
         tasksTableBody.appendChild(row);
     });
@@ -97,8 +98,8 @@ function displayTasks(tasks) {
 
     tasksTableBody.querySelectorAll('.delete-btn').forEach((button) => {
         button.addEventListener('click', (e) => {
-            const taskName = e.target.dataset.name;
-            deleteTask(taskName);
+            const taskId = e.target.dataset.id;
+            deleteTask(taskId);
         });
     });
 }

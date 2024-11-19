@@ -75,17 +75,19 @@ fun Application.configureRouting(repository: TaskRepository) {
                 }
             }
 
-            delete("/{taskName}") {
-                val name = call.parameters["taskName"]
-                if (name == null) {
-                    call.respond(HttpStatusCode.BadRequest)
+            delete("/{taskId}") {
+                val taskId = call.parameters["taskId"]?.toIntOrNull()
+
+                if (taskId == null) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid or missing Task ID")
                     return@delete
                 }
 
-                if (repository.removeTask(name)) {
-                    call.respond(HttpStatusCode.NoContent)
+                val success = repository.removeTask(taskId)
+                if (success) {
+                    call.respond(HttpStatusCode.NoContent) // Successful deletion, no content returned
                 } else {
-                    call.respond(HttpStatusCode.NotFound)
+                    call.respond(HttpStatusCode.NotFound, "Task with ID $taskId not found")
                 }
             }
         }
