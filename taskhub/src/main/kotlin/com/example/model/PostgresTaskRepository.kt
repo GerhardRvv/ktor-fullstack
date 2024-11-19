@@ -34,9 +34,9 @@ class PostgresTaskRepository : TaskRepository {
         }
     }
 
-    override suspend fun removeTask(name: String): Boolean = suspendTransaction {
+    override suspend fun removeTask(id: Int): Boolean = suspendTransaction {
         val rowsDeleted = TaskTable.deleteWhere {
-            TaskTable.name eq name
+            TaskTable.id eq id
         }
         rowsDeleted == 1
     }

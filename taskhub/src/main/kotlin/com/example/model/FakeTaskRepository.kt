@@ -2,10 +2,10 @@ package com.example.model
 
 class FakeTaskRepository : TaskRepository {
     private val tasks = mutableListOf(
-        Task("cleaning", "Clean the house", Priority.Low),
-        Task("gardening", "Mow the lawn", Priority.Medium),
-        Task("shopping", "Buy the groceries", Priority.High),
-        Task("painting", "Paint the fence", Priority.Medium)
+        Task(id = 1, "cooking", "Cook dinner", Priority.High),
+        Task(id = 2, "cleaning", "Clean the house", Priority.Low),
+        Task(id = 3, "shopping", "Buy the groceries", Priority.High),
+        Task(id = 4, "painting", "Paint the fence", Priority.Medium)
     )
 
     override suspend fun allTasks(): List<Task> = tasks
@@ -25,7 +25,7 @@ class FakeTaskRepository : TaskRepository {
         tasks.add(task)
     }
 
-    override suspend fun removeTask(name: String): Boolean {
-        return tasks.removeIf { it.name ==  name}
+    override suspend fun removeTask(id: Int): Boolean {
+        return tasks.removeIf { it.id ==  id}
     }
 }

@@ -18,7 +18,6 @@ object TaskTable : IntIdTable("task") {
 
 class TaskDAO(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<TaskDAO>(TaskTable)
-
     var name by TaskTable.name
     var description by TaskTable.description
     var priority by TaskTable.priority
@@ -28,6 +27,7 @@ suspend fun <T> suspendTransaction(block: Transaction.() -> T): T =
     newSuspendedTransaction(Dispatchers.IO, statement = block)
 
 fun daoToModel(dao: TaskDAO) = Task(
+    dao.id.value,
     dao.name,
     dao.description,
     Priority.valueOf(dao.priority)

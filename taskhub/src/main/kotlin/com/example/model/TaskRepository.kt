@@ -5,5 +5,5 @@ interface TaskRepository {
     suspend fun tasksByPriority(priority: Priority): List<Task>
     suspend fun taskByName(name: String): Task?
     suspend fun addTask(task: Task)
-    suspend fun removeTask(name: String): Boolean
+    suspend fun removeTask(id: Int): Boolean
 }
