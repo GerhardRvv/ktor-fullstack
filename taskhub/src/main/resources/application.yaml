@@ -3,12 +3,5 @@ ktor:
         modules:
             - com.example.ApplicationKt.module
     deployment:
-        port: ${PORT:-8080}
+        port: "$PORT:8080"
         host: 0.0.0.0
-
-    database:
-#      url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/tasksdatabase"
-#      user: "${DB_USER:defaultUser}"
-#      password: "${DB_PASSWORD:defaultPassword}"
-      driver: "org.postgresql.Driver"
-

@@ -17,6 +17,7 @@ if (localPropertiesFile.exists()) {
     extra["dbUrl"] = localProperties["DB_URL"]
     extra["dbUser"] = localProperties["DB_USER"]
     extra["dbPassword"] = localProperties["DB_PASSWORD"]
+    extra["dbDriver"] = localProperties["DB_DRIVER"]
 }
 
 application {
@@ -28,7 +29,8 @@ application {
         "-Dio.ktor.development=$isDevelopment",
         "-Ddb.url=${extra["dbUrl"]}",
         "-Ddb.user=${extra["dbUser"]}",
-        "-Ddb.password=${extra["dbPassword"]}"
+        "-Ddb.password=${extra["dbPassword"]}",
+        "-Ddb.driver=${extra["dbDriver"]}"
     )
 }
 

@@ -1,1 +1,1 @@
-rootProject.name = "com.example.ktor"
+rootProject.name = "ktor-task-hub"
