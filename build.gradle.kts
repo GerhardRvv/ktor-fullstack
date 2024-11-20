@@ -9,28 +9,30 @@ plugins {
 group = "com.example"
 version = "0.0.1"
 
+// Load properties from local.properties if it exists
 val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    val localProperties = Properties()
-    localProperties.load(localPropertiesFile.inputStream())
+val localProperties = Properties()
 
-    extra["dbUrl"] = localProperties["DB_URL"]
-    extra["dbUser"] = localProperties["DB_USER"]
-    extra["dbPassword"] = localProperties["DB_PASSWORD"]
-    extra["dbDriver"] = localProperties["DB_DRIVER"]
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
+// Resolve database properties, prioritizing environment variables
+val dbUrl: String = System.getenv("DB_URL") ?: localProperties.getProperty("DB_URL", "jdbc:postgresql://localhost:5432/tasksdatabase")
+val dbUser: String = System.getenv("DB_USER") ?: localProperties.getProperty("DB_USER", "localUser")
+val dbPassword: String = System.getenv("DB_PASSWORD") ?: localProperties.getProperty("DB_PASSWORD", "localPassword")
+val dbDriver: String = System.getenv("DB_DRIVER") ?: localProperties.getProperty("DB_DRIVER", "org.postgresql.Driver")
+
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
     mainClass.set("com.example.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf(
         "-Dio.ktor.development=$isDevelopment",
-        "-Ddb.url=${extra["dbUrl"]}",
-        "-Ddb.user=${extra["dbUser"]}",
-        "-Ddb.password=${extra["dbPassword"]}",
-        "-Ddb.driver=${extra["dbDriver"]}"
+        "-Ddb.url=$dbUrl",
+        "-Ddb.user=$dbUser",
+        "-Ddb.password=$dbPassword",
+        "-Ddb.driver=$dbDriver"
     )
 }
 
